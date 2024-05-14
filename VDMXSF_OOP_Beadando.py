@@ -6,22 +6,22 @@ from datetime import datetime
 
 
 # Definiálunk egy Room osztályt, amely tartalmazza a szoba számát és árát.
-class Room:
-    def __init__(self, szobaszam, ar):
-        self.szobaszam = szobaszam
-        self.ar = ar
+class Szoba:
+    def __init__(self, room_number, price):
+        self.room_number = room_number
+        self.price = price
 
 
-# Az OneBedRoom osztály az Room osztályból származik és beállítja az árat 10000-re.
-class OneBedRoom(Room):
-    def __init__(self, szobaszam):
-        super().__init__(szobaszam, 10000)
+# Az OneBedRoom osztály az Szoba osztályból származik és beállítja az árat 10000-re.
+class OneBedRoom(Szoba):
+    def __init__(self, room_number):
+        super().__init__(room_number, 10000)
 
 
-# A TwoBedRoom osztály az Room osztályból származik és beállítja az árat 15000-re.
-class TwoBedRoom(Room):
-    def __init__(self, szobaszam):
-        super().__init__(szobaszam, 15000)
+# A TwoBedRoom osztály az Szoba osztályból származik és beállítja az árat 15000-re.
+class TwoBedRoom(Szoba):
+    def __init__(self, room_number):
+        super().__init__(room_number, 15000)
 
 
 # A Hotel osztály létrehozása, amely tartalmazza a szálloda nevét és a szobákat.
@@ -35,7 +35,7 @@ class Hotel:
         self.rooms.append(room)
 
 
-# Definiálunk egy Booking osztályt, amely tartalmazza a foglalás szobáját és dátumát.
+# Definiálunk egy Foglalas osztályt, amely tartalmazza a foglalás szobáját és dátumát.
 class Booking:
     def __init__(self, room, date):
         self.room = room
@@ -51,13 +51,13 @@ class BookingManager:
     # Foglalás létrehozása egy adott szobára és dátumra.
     def booking(self, room_number, date):
         for room in self.hotel.rooms:
-            if room.szobaszam == room_number:
+            if room.room_number == room_number:
                 # Ellenőrzés, hogy a megadott szoba és dátumhoz van-e már foglalás
                 if not self.check_booking(room, date):
                     return None
                 booking = Booking(room, date)
                 self.bookings.append(booking)
-                return room.ar
+                return room.price
         return None
 
     # Foglalás törlése az adott sorszám alapján.
@@ -73,7 +73,7 @@ class BookingManager:
     # A foglalások listázása.
     def list_bookings(self):
         for i, booking in enumerate(self.bookings):
-            print(f"Foglalás {i + 1}: Szoba: {booking.room.szobaszam}, Dátum: {booking.date.strftime('%Y-%m-%d')}")
+            print(f"Foglalás {i + 1}: Szoba: {booking.room.room_number}, Dátum: {booking.date.strftime('%Y-%m-%d')}")
 
     # Ellenőrzi, hogy egy adott szobára és dátumra már van-e foglalás.
     def check_booking(self, room, date):
@@ -116,12 +116,10 @@ def main():
 
         if choice == "1":
             room_number = input("Add meg a foglalni kívánt szoba számát: ")
-            current_time = datetime.now()
-            print("A legkorábban foglalható dátum: ", current_time.date())
             date_str = input("Add meg a foglalás dátumát (YYYY-MM-DD formátumban): ")
             try:
                 date = datetime.strptime(date_str, "%Y-%m-%d")
-                if date >= current_time:
+                if date >= datetime.now():
                     price = booking_manager.booking(room_number, date)
                     if price:
                         print(f"A foglalás sikeres. Ár: {price} Ft.")
